@@ -15,9 +15,9 @@ from network_training.training_run import training_run
 
 
 # load the experiment schedule
-schedule_path = os.path.join(models_folder, 'classification_experiment_sota_comparison.csv')
+schedule_path = os.path.join(models_folder, 'example_training_runs.xlsx')
 if os.path.exists(schedule_path):
-    schedule_df = pd.read_csv(schedule_path)
+    schedule_df = pd.read_excel(schedule_path)
     schedule_dict = schedule_df.to_dict('list')
 else:
     raise IOError('Incorrect path to schedule file was specified.')
@@ -90,4 +90,4 @@ for idx in np.arange(len(schedule_df)):
         schedule_dict['end_run'][idx] = end_run.strftime('%m/%d/%Y %H:%M:%S')
         schedule_dict['best_val_loss'][idx] = prev_best_loss
 
-        pd.DataFrame.from_dict(schedule_dict).to_csv(schedule_path, index=False)
+        pd.DataFrame.from_dict(schedule_dict).to_excel(schedule_path, index=False)

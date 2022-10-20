@@ -24,7 +24,7 @@ from efficientnet_pytorch import EfficientNet
 from efficientnet_pytorch.utils import get_same_padding_conv2d
 
 from utils.model_utils import change_input, initialize
-from models.architectures_by_others import vgg16_born_etal, stn_roy_etal
+from models.architectures_by_others import VGG16_Born_etal, STN_Roy_etal
 
 
 def get_frame_classification_model(
@@ -62,7 +62,7 @@ def get_frame_classification_model(
         if pretrained == False:
             model.conv1 = change_input(model.conv1, input_channels)       
     
-    elif model_name in 'densenet121':
+    elif model_name == 'densenet121':
         model = torchvision.models.densenet121(pretrained=pretrained, progress=True)
         # replace the output layer to include only two classes
         model.classifier = nn.Linear(in_features=1024, out_features=N_classes)
@@ -79,6 +79,14 @@ def get_frame_classification_model(
             Conv2d = get_same_padding_conv2d(model._global_params.image_size)
             model._conv_stem = Conv2d(input_channels, model._conv_stem.out_channels, kernel_size=(3, 3), stride=(2, 2), bias=False)
     
+    elif model_name == 'mobilenet_v2':
+        model = torchvision.models.mobilenet_v2(pretrained=pretrained, progress=True)
+        # replace the output layer to include only two classes
+        model.classifier[1] = nn.Linear(in_features=1280, out_features=N_classes)
+        # change the first layer to have the desired number of input channels if pretrained is False
+        if pretrained == False:
+            model.features[0][0] = change_input(model.features[0][0], input_channels)  
+
     elif model_name == 'ViT':
         model = timm.create_model('vit_tiny_patch16_384', pretrained=pretrained, num_classes=N_classes)
         # change the first layer to have the desired number of input channels if pretrained is False
@@ -86,10 +94,10 @@ def get_frame_classification_model(
             model.patch_embed.proj = change_input(model.patch_embed.proj, input_channels) 
 
     elif model_name == 'stn_roy_etal':
-        model = stn_roy_etal(img_size=(256,384), in_channels=input_channels, nclasses=N_classes)
+        model = STN_Roy_etal(img_size=(256,384), in_channels=input_channels, nclasses=N_classes) 
 
     elif model_name == 'vgg16_born_etal':
-        model = vgg16_born_etal(N_classes=N_classes, pretrained=pretrained)
+        model = VGG16_Born_etal(N_classes=N_classes, pretrained=pretrained)
         # change the first layer to have the desired number of input channels if pretrained is False
         if pretrained == False:
            model.encoder[0] = change_input(model.encoder[0], input_channels)
@@ -112,15 +120,15 @@ if __name__ == '__main__':
     N_classes = 2
     pretrained = True
     input_shape = (1, input_channels, 256, 384)
-    display_depth = 4
+    display_depth = 5
 
-    model = get_frame_classification_model('efficientnet', input_channels, N_classes, pretrained)
+    model = get_frame_classification_model('efficientnet-b0', input_channels, N_classes, pretrained)
     if True: summary(model, input_shape, depth=display_depth, col_names=["input_size", "output_size", "num_params"]) # number of weights for is efficientnet not correctly displayed
     
-    if True: print(model)
+    if False: print(model)
 
     # print the trainable parameters (weights and biases)
-    if True:
+    if False:
         for name, param in model.named_parameters():
             print(name,':', param.shape)
     

@@ -18,6 +18,7 @@ import torch.nn as nn
 from torchinfo import summary
 
 from utils.model_utils import change_input, initialize
+from models.architectures_by_others import UNet3D_Born_etal
 
 
 def get_video_classification_model(
@@ -63,6 +64,8 @@ def get_video_classification_model(
         if pretrained == False:
             model.stem[0] = change_input(model.stem[0], input_channels)       
         
+    elif model_name == 'unet_3d_born_etal':
+        model = UNet3D_Born_etal(pretrained=pretrained, input_channels=input_channels, N_classes=N_classes)
     else:
         raise ValueError('Model name not recognized.')
 
@@ -80,13 +83,13 @@ if __name__ == '__main__':
     input_channels = 3
     N_classes = 2
     pretrained = True
-    input_shape = (1, input_channels, 16, 256, 384)
+    input_shape = (1, input_channels, 16, 256, 384)  
     display_depth = 5
 
     model = get_video_classification_model('resnet18_3d', input_channels, N_classes, pretrained)
-    if True: summary(model, input_shape, depth=display_depth) # number of weights for efficientnet is not correctly displayed
+    if True: summary(model, input_shape, depth=display_depth, col_names=["input_size", "output_size", "num_params"]) # number of weights for efficientnet is not correctly displayed
     
-    if True: print(model)
+    if False: print(model)
 
     # list the trainable parameters (weights and biases)
     if False:

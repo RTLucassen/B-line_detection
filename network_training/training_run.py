@@ -175,7 +175,7 @@ def training_run(settings: dict) -> None:
     
     # bring the model to selected device and print a summary of the architecture
     model = model.to(device)
-    summary(model, depth=4)
+    summary(model, depth=4, col_names=["input_size", "output_size", "num_params"])
 
     # check what class weights should be used
     class_weights = train_dataset.get_class_weights() if settings['focal_class_weights'] == ['balanced'] else settings['focal_class_weights']
@@ -235,7 +235,6 @@ def training_run(settings: dict) -> None:
             
             # bring the data to the correct device
             X, y, w = X.to(device), y.to(device), w.to(device)
-
             # check if an auxiliary loss is used
             if settings['aux_classification']: 
                 # get the classification labels from the segmentation labels

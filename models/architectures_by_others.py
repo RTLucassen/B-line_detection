@@ -1,16 +1,16 @@
 """
 Implementation of network architectures used by other papers in automated interpretation of lung ultrasound.
 """
-
+import os
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 
-from torchinfo import summary
+# -------------------------------------------------------------------------------------------------------
 
-class vgg16_born_etal(nn.Module):
+class VGG16_Born_etal(nn.Module):
     """
     Implementation of VGG16 architecture used by Born et al. in: https://www.mdpi.com/2076-3417/11/2/672, 
     based on: https://github.com/jannisborn/covid19_ultrasound/blob/master/pocovidnet/pocovidnet/model.py 
@@ -37,15 +37,15 @@ class vgg16_born_etal(nn.Module):
         x = self.head(x)
         return x
 
+# -------------------------------------------------------------------------------------------------------
 
-class stn_roy_etal(nn.Module):
+class STN_Roy_etal(nn.Module):
     """
     Implementation of STN with CNN architecture used by Roy et al. in: https://ieeexplore.ieee.org/document/9093068, 
-    based on: https://github.com/mhug-Trento/DL4covidUltrasound 
-    The number of weights can differ due to the difference in image sizes.
+    based on: https://github.com/mhug-Trento/DL4covidUltrasound
     """
     def __init__(self, img_size, in_channels, nclasses, fixed_scale=True):
-        super(stn_roy_etal, self).__init__()
+        super(STN_Roy_etal, self).__init__()
 
         self.img_size = img_size
         self.fixed_scale = fixed_scale
@@ -285,3 +285,124 @@ class stn_roy_etal(nn.Module):
         x = F.dropout(self.block7(x), training=self.training)
         x = self.out(x)
         return x
+
+# -------------------------------------------------------------------------------------------------------
+
+class ContBatchNorm3d(nn.modules.batchnorm._BatchNorm):
+    def _check_input_dim(self, input):
+
+        if input.dim() != 5:
+            raise ValueError('expected 5D input (got {}D input)'.format(input.dim()))
+        #super(ContBatchNorm3d, self)._check_input_dim(input)
+
+    def forward(self, input):
+        self._check_input_dim(input)
+        return F.batch_norm(
+            input, self.running_mean, self.running_var, self.weight, self.bias,
+            True, self.momentum, self.eps)
+
+class LUConv(nn.Module):
+    def __init__(self, in_chan, out_chan, act):
+        super(LUConv, self).__init__()
+        self.conv1 = nn.Conv3d(in_chan, out_chan, kernel_size=3, padding=1)
+        self.bn1 = ContBatchNorm3d(out_chan)
+
+        if act == 'relu':
+            self.activation = nn.ReLU(out_chan)
+        elif act == 'prelu':
+            self.activation = nn.PReLU(out_chan)
+        elif act == 'elu':
+            self.activation = nn.ELU(inplace=True)
+        else:
+            raise
+
+    def forward(self, x):
+        out = self.activation(self.bn1(self.conv1(x)))
+        return out
+
+def _make_nConv(in_channel, depth, act, double_chnnel=False):
+    if double_chnnel:
+        layer1 = LUConv(in_channel, 32 * (2 ** (depth+1)),act)
+        layer2 = LUConv(32 * (2 ** (depth+1)), 32 * (2 ** (depth+1)),act)
+    else:
+        layer1 = LUConv(in_channel, 32*(2**depth),act)
+        layer2 = LUConv(32*(2**depth), 32*(2**depth)*2,act)
+
+    return nn.Sequential(layer1,layer2)
+
+class DownTransition(nn.Module):
+    def __init__(self, in_channel, depth, act):
+        super(DownTransition, self).__init__()
+        self.ops = _make_nConv(in_channel, depth,act)
+        self.maxpool = nn.MaxPool3d(2)
+        self.current_depth = depth
+
+    def forward(self, x):
+        if self.current_depth == 3:
+            out = self.ops(x)
+            return out
+        else:
+            out_before_pool = self.ops(x)
+            out = self.maxpool(out_before_pool)
+            return out
+
+class UNetEncoder3D(nn.Module):
+    # the number of convolutions in each layer corresponds
+    # to what is in the actual prototxt, not the intent
+    def __init__(self, input_channels, act='relu'):
+        super(UNetEncoder3D, self).__init__()
+
+        self.down_tr64 = DownTransition(input_channels,0,act)
+        self.down_tr128 = DownTransition(64,1,act)
+        self.down_tr256 = DownTransition(128,2,act)
+        self.down_tr512 = DownTransition(256,3,act)
+
+    def forward(self, x):
+        self.out64 = self.down_tr64(x)
+        self.out128 = self.down_tr128(self.out64)
+        self.out256 = self.down_tr256(self.out128)
+        self.out512 = self.down_tr512(self.out256)
+        
+        return self.out512
+
+class UNet3D_Born_etal(nn.Module):
+    """
+    Implementation of 3D U-Net Encoder and classification head with pretrained weights from Models Genesis 
+    by Zhou et al. in: https://github.com/MrGiovanni/ModelsGenesis/tree/master/pytorch,
+    used by Born et al. in: https://www.mdpi.com/2076-3417/11/2/672, 
+    """    
+    def __init__(self, pretrained, input_channels, N_classes, model_params_path = r'C:\Users\rlucasse\Documenten\repositories\B-line_detection\models\Genesis_Chest_CT.pt'):
+        super(UNet3D_Born_etal, self).__init__()
+
+        # define base model and fully connected layers
+        self.encoder = UNetEncoder3D(input_channels)
+        self.dense_1 = nn.Linear(512, 1024, bias=True)
+        self.dense_2 = nn.Linear(1024, N_classes, bias=True)
+
+        # load the pretrained parameters if specified
+        if pretrained:
+            # check if the parameter file exists
+            if not os.path.exists(model_params_path):
+                raise IOError('Models Genesis pretrained parameters file does not exists. Please check if the path is correct.')
+            # load the weights
+            checkpoint = torch.load(model_params_path)
+            state_dict = checkpoint['state_dict']
+            encoder_state_dict = {}
+            for key in state_dict.keys():
+                # only copy the encoder parameters
+                if 'down' in key:
+                    if 'down_tr64.ops.0.conv1.weight' in key:
+                        encoder_state_dict[key.replace("module.", "")] = torch.tile(state_dict[key], (1, input_channels, 1, 1, 1))
+                    else:
+                        encoder_state_dict[key.replace("module.", "")] = state_dict[key]
+            self.encoder.load_state_dict(encoder_state_dict)
+
+    def forward(self, x):
+        encoder_output = self.encoder(x)
+        # This global average polling is for shape (N,C,H,W) not for (N, H, W, C)
+        # where N = batch_size, C = channels, H = height, and W = Width
+        out_glb_avg_pool = F.avg_pool3d(encoder_output, kernel_size=encoder_output.size()[2:]).view(encoder_output.size()[0],-1)
+        linear_out = self.dense_1(out_glb_avg_pool)
+        output = self.dense_2(F.relu(linear_out))
+
+        return output
