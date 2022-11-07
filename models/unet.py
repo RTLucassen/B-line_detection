@@ -17,7 +17,6 @@ class Block(nn.Module):
             input_channels:  number of channels of the input tensor.
             output_channels:  number of channels of the output tensor.
             batch_norm:  specifies if batch normalization layers should be used.
-            drop_rate: specifies the dropout rate.
         """
         super().__init__()
         # define state
@@ -58,6 +57,7 @@ class Down(Block):
         Args:
             input_channels:  number of channels of the input tensor.
             output_channels:  number of channels of the output tensor.
+            downsample_method:  method to downsample feature maps.  
             batch_norm:  specifies if batch normalization layers should be used.
         """
         super().__init__(input_channels, output_channels, batch_norm)
@@ -96,8 +96,8 @@ class Up(Block):
         Args:
             input_channels:  number of channels of the input tensor.
             output_channels:  number of channels of the output tensor.
+            upsample_method:  method to upsample feature maps.
             batch_norm:  specifies if batch normalization layers should be used.
-            drop_rate: specifies the dropout rate.
         """
         # since upsampling does not reduce the number of feature maps, we need to update the expected number of input channels
         if upsample_method == 'interpolate':

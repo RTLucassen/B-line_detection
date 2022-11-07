@@ -175,7 +175,7 @@ def training_run(settings: dict) -> None:
     
     # bring the model to selected device and print a summary of the architecture
     model = model.to(device)
-    summary(model, depth=4, col_names=["input_size", "output_size", "num_params"])
+    summary(model, depth=4, col_names=['num_params'])
 
     # check what class weights should be used
     class_weights = train_dataset.get_class_weights() if settings['focal_class_weights'] == ['balanced'] else settings['focal_class_weights']
