@@ -1,8 +1,8 @@
-# Deep Learning for Detection and Localization of B-Lines
-This repository contains the code for *"Deep Learning for Detection and Localization of B-Lines"*. 
+# Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound
+This repository contains the code for *"Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound"*. 
 
 ## Data and Network Parameters
-The lung ultrasound dataset and network parameter files for the trained models are available from: *(add link)*.
+The lung ultrasound dataset and network parameter files for the trained models are available at [Harvard Dataverse](https://doi.org/10.7910/DVN/GLCZRB).
 After downloading and unzipping, all files are inside the `BEDLUS-Data` folder.
 
 ## Project Setup
