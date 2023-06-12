@@ -1,11 +1,24 @@
 # Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound
-This repository contains all code to support the paper: ***"Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound"***. 
-[[`arXiv`](https://arxiv.org/abs/2302.07844)]
+This repository contains all code to support the paper ***"Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound"***,
+published in IEEE Journal of Biomedical and Health Informatics. 
+[[`arXiv`](https://arxiv.org/abs/2302.07844)][[`JBHI`](https://ieeexplore.ieee.org/document/10143623)]
+
+<div align="center">
+  <img width="40%" alt="clip1" src=".github\clip1.gif"> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img width="40%" alt="clip2" src=".github\clip2.gif">
+</div>
+&nbsp;
+<div align="center">
+  <img width="40%" alt="clip3" src=".github\clip3.gif"> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img width="40%" alt="clip4" src=".github\clip4.gif">
+</div>
 
 ## Data and Network Parameters
 As part of this work, we curated the ***"Boston Emergency Department Lung UltraSound (BEDLUS)"*** dataset.
 This dataset comprises 1,419 videos from 113 patients, along with expert annotations.
-All videos are labeled as positive or negative for the presence of B-lines. For the positive videos, a total of15,755 B-lines are annotated on 10,371 frames.
+All videos are labeled as positive or negative for the presence of B-lines. For the positive videos, a total of 15,755 B-lines are annotated on 10,371 frames.
 
 The BEDLUS dataset and network parameter files for the trained models are available at [Harvard Dataverse](https://doi.org/10.7910/DVN/GLCZRB).
 
@@ -64,7 +77,8 @@ If you found our work useful in your research, please consider citing our paper:
 @article{lucassen2023deep,
   title={Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound},
   author={Lucassen, Ruben T and Jafari, Mohammad H and Duggan, Nicole M and Jowkar, Nick and Mehrtash, Alireza and Fischetti, Chanel and Bernier, Denie and Prentice, Kira and Duhaime, Erik P and Jin, Mike and others},
-  journal={arXiv preprint arXiv:2302.07844},
-  year={2023}
+  journal={IEEE Journal of Biomedical and Health Informatics},
+  year={2023},
+  publisher={IEEE}
 }
 ```
