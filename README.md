@@ -59,7 +59,7 @@ The dataset split is already provided in one of the supplementary files.
 python dataset_generation/2_create_dataset.py
 ```
 3. Specify the labelset type in `3_create_dataset.py`:
-    - `task = 'segmentation'` with `folder = 'frames_1_disk_4mm'` for the pixel-level
+    - `task = 'segmentation'` with `folder = 'frames_1'` for the pixel-level
     - `task = 'classification'` with `folder = 'frames_1'` for the frame-level
     - `task = 'classification'` with `folder = 'frames_16'` for the clip-level
 4. Create the labelset:
