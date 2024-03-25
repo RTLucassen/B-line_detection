@@ -8,6 +8,7 @@ Only a single empty labelmap is created for all negative cases of a fold.
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import torch

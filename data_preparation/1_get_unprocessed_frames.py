@@ -5,6 +5,7 @@ Save all frames of the raw lung ultrasound clips (.mp4) as separate images (.jpg
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import pickle

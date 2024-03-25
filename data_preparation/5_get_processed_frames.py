@@ -7,6 +7,7 @@ and resized to the desired shape. Additionally, embedded text on the side is rem
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import pickle

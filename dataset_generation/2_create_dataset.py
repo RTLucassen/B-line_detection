@@ -7,6 +7,7 @@ and whether they were labeled positive or negative.
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import concurrent.futures

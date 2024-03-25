@@ -6,6 +6,7 @@ Create and save clips as numpy arrays using separated frame images.
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import numpy as np
