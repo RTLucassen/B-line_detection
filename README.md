@@ -1,8 +1,11 @@
 # Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound
 This repository contains all code to support the paper:  
+
 ***"Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound"***  
-published in IEEE Journal of Biomedical and Health Informatics. 
-[[`arXiv`](https://arxiv.org/abs/2302.07844)][[`JBHI`](https://ieeexplore.ieee.org/abstract/document/10143623)][[`Supplementary material`](https://github.com/RTLucassen/B-line_detection/tree/main/supplementary_material_paper)]
+
+Published in IEEE Journal of Biomedical and Health Informatics. 
+
+[[`arXiv`](https://arxiv.org/abs/2302.07844)] [[`JBHI`](https://ieeexplore.ieee.org/abstract/document/10143623)] [[`Supplementary material`](https://github.com/RTLucassen/B-line_detection/tree/main/supplementary_material_paper)]
 
 
 <div align="center">
