@@ -60,6 +60,7 @@ Number of clips: 227
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import pandas as pd

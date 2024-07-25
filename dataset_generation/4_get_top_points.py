@@ -5,6 +5,7 @@ Create file with all top point annotations for evaluation of instance detection.
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import numpy as np

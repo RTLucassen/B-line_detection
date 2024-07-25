@@ -25,6 +25,7 @@ o  Key commands (only work if non-rectified image is shown):
 import os
 import sys
 sys.path.append('..')
+sys.path.append('.')
 sys.path.append(os.path.join(__file__, '..', '..'))
 
 import pickle
