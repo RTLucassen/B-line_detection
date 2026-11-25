@@ -1,12 +1,14 @@
+<div align="center">
+
 # Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound
-This repository contains all code to support the paper:  
 
-***"Deep Learning for Detection and Localization of B-Lines in Lung Ultrasound"***  
+Ruben T. Lucassen*, Mohammad H. Jafari*, Nicole M. Duggan*, Nick Jowkar, Alireza Mehrtash, Chanel Fischetti, Denie Bernier, Kira Prentice, Erik P. Duhaime, Mike Jin, Purang Abolmaesumi, Friso G. Heslinga, Mitko Veta, Maria A. Duran-Mendicuti, Sarah Frisken, Paul B. Shyn, Alexandra J. Golby, Edward Boyer, William M. Wells, Andrew J. Goldsmith* & Tina Kapur*
 
-Published in IEEE Journal of Biomedical and Health Informatics. 
+*Published in IEEE Journal of Biomedical and Health Informatics*
 
 [[`arXiv`](https://arxiv.org/abs/2302.07844)] [[`JBHI`](https://ieeexplore.ieee.org/abstract/document/10143623)] [[`Supplementary material`](https://github.com/RTLucassen/B-line_detection/tree/main/supplementary_material_paper)]
 
+</div>
 
 <div align="center">
   <img width="40%" alt="clip1" src=".github\clip1.gif"> 
